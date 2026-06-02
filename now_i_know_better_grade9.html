@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Now I Know Better – Unit Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #6c3fc5;
+    --purple-light: #e8dcff;
+    --purple-mid: #a57be0;
+    --gold: #f5a623;
+    --gold-light: #fff3d0;
+    --green: #22c55e;
+    --red: #ef4444;
+    --bg: #f4f0fb;
+    --card: #ffffff;
+    --border: #ddd6f3;
+    --text: #1e1530;
+    --muted: #7a6f9a;
+    --tab-inactive: #ede8f8;
+    --shadow: 0 4px 20px rgba(108,63,197,0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Heebo', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+  }
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #6c3fc5 0%, #9b5de5 60%, #f5a623 100%);
+    color: white;
+    padding: 22px 30px 16px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  .header-title {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.7rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .header-sub {
+    font-size: 0.95rem;
+    opacity: 0.88;
+    margin-top: 2px;
+  }
+  /* SCORE BAR */
+  .score-panel {
+    background: white;
+    border-bottom: 2px solid var(--border);
+    padding: 14px 30px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(108,63,197,0.08);
+  }
+  .score-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--purple);
+    white-space: nowrap;
+  }
+  .score-bar-wrap {
+    flex: 1;
+    min-width: 180px;
+    height: 18px;
+    background: var(--tab-inactive);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6c3fc5, #f5a623);
+    border-radius: 20px;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+    min-width: 0;
+  }
+  .score-value {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: var(--purple);
+    white-space: nowrap;
+    min-width: 52px;
+    text-align: center;
+  }
+  .name-input {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 5px 12px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    outline: none;
+    width: 180px;
+    transition: border-color 0.2s;
+    direction: rtl;
+  }
+  .name-input:focus { border-color: var(--purple); }
+
+  /* TABS */
+  .tabs-nav {
+    display: flex;
+    gap: 6px;
+    padding: 14px 24px 0;
+    flex-wrap: wrap;
+    background: var(--bg);
+  }
+  .tab-btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    padding: 8px 18px;
+    border-radius: 12px 12px 0 0;
+    border: 2px solid var(--border);
+    border-bottom: none;
+    background: var(--tab-inactive);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+  }
+  .tab-btn.active {
+    background: white;
+    color: var(--purple);
+    border-color: var(--purple-mid);
+    border-bottom: 2px solid white;
+    margin-bottom: -2px;
+    z-index: 2;
+  }
+  .tab-btn:hover:not(.active) { background: var(--purple-light); }
+
+  .tabs-content {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 0 16px 16px 16px;
+    margin: 0 24px 24px;
+    padding: 28px 28px 22px;
+    min-height: 400px;
+    box-shadow: var(--shadow);
+  }
+  .tab-pane { display: none; }
+  .tab-pane.active { display: block; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.25rem;
+    color: var(--purple);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title .emoji { font-size: 1.4rem; }
+  .section-desc {
+    color: var(--muted);
+    font-size: 0.92rem;
+    margin-bottom: 18px;
+    direction: rtl;
+  }
+
+  /* WORD BANK BOX */
+  .word-bank {
+    background: var(--gold-light);
+    border: 2px solid var(--gold);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .word-bank-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    color: #b07a00;
+    font-size: 0.88rem;
+    margin-left: 6px;
+  }
+  .word-chip {
+    background: white;
+    border: 1.5px solid var(--gold);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    direction: ltr;
+  }
+
+  /* QUESTION ITEM */
+  .q-item {
+    background: #faf9ff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .q-item.correct { background: #f0fdf4; border-color: var(--green); }
+  .q-item.wrong { background: #fff5f5; border-color: var(--red); }
+  .q-item.locked { opacity: 0.85; }
+
+  .q-text {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    direction: ltr;
+    text-align: left;
+    line-height: 1.5;
+  }
+  .q-text .blank-input {
+    border: none;
+    border-bottom: 2px solid var(--purple-mid);
+    background: transparent;
+    font-family: 'Heebo', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--purple);
+    width: 140px;
+    text-align: center;
+    outline: none;
+    padding: 0 4px;
+    direction: ltr;
+    transition: border-color 0.2s;
+  }
+  .q-text .blank-input:focus { border-color: var(--purple); }
+  .q-text .blank-input:disabled { color: var(--muted); border-bottom-color: var(--border); }
+
+  /* MC OPTIONS */
+  .mc-options { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .mc-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    direction: ltr;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    font-size: 0.96rem;
+  }
+  .mc-option:hover:not(.disabled) { background: var(--purple-light); }
+  .mc-option input[type="radio"] { accent-color: var(--purple); width: 16px; height: 16px; }
+  .mc-option.disabled { pointer-events: none; }
+  .mc-option.selected-correct { background: #dcfce7; font-weight: 700; color: #166534; border-radius: 8px; }
+  .mc-option.selected-wrong { background: #fee2e2; color: #991b1b; border-radius: 8px; }
+  .mc-option.show-correct { background: #dcfce7; font-weight: 700; color: #166534; border-radius: 8px; }
+
+  /* MATCHING */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 8px 12px;
+    align-items: center;
+    margin-bottom: 16px;
+    direction: ltr;
+  }
+  .match-word {
+    background: var(--purple-light);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--purple);
+    text-align: center;
+  }
+  .match-arrow { color: var(--muted); font-size: 1.2rem; text-align: center; }
+  .match-select {
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text);
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+    background: white;
+  }
+  .match-select:focus { border-color: var(--purple); }
+  .match-select:disabled { background: #f5f5f5; }
+
+  /* TRUE/FALSE */
+  .tf-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    direction: ltr;
+    padding: 8px 10px;
+    background: #faf9ff;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+  }
+  .tf-row.correct { background: #f0fdf4; border-color: var(--green); }
+  .tf-row.wrong { background: #fff5f5; border-color: var(--red); }
+  .tf-text { flex: 1; font-size: 0.96rem; font-weight: 500; }
+  .tf-btns { display: flex; gap: 6px; }
+  .tf-btn {
+    padding: 4px 14px;
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    background: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tf-btn:hover:not(:disabled) { background: var(--purple-light); border-color: var(--purple); }
+  .tf-btn.selected-true { background: #dcfce7; border-color: var(--green); color: #166534; }
+  .tf-btn.selected-false { background: #fee2e2; border-color: var(--red); color: #991b1b; }
+  .tf-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+
+  /* FEEDBACK */
+  .feedback-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    direction: rtl;
+  }
+  .feedback-correct { color: var(--green); }
+  .feedback-wrong { color: var(--red); }
+  .feedback-reveal { color: #7a6f9a; font-size: 0.85rem; direction: ltr; }
+  .attempts-left { font-size: 0.78rem; color: var(--muted); margin-top: 2px; direction: rtl; }
+
+  /* CHECK BTN */
+  .check-btn {
+    background: var(--purple);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 22px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 8px;
+    display: inline-block;
+  }
+  .check-btn:hover:not(:disabled) { background: #5a30a8; transform: translateY(-1px); }
+  .check-btn:disabled { background: var(--muted); cursor: not-allowed; }
+
+  /* RESET BTN */
+  .reset-btn {
+    background: white;
+    color: var(--red);
+    border: 2px solid var(--red);
+    border-radius: 10px;
+    padding: 7px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    float: left;
+  }
+  .reset-btn:hover { background: #fee2e2; }
+
+  /* TAB SCORE */
+  .tab-score-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    padding: 10px 14px;
+    background: var(--purple-light);
+    border-radius: 10px;
+  }
+  .tab-score-label { font-size: 0.85rem; font-weight: 700; color: var(--purple); white-space: nowrap; }
+  .tab-score-wrap { flex: 1; height: 12px; background: white; border-radius: 20px; overflow: hidden; }
+  .tab-score-fill { height: 100%; background: linear-gradient(90deg, #6c3fc5, #f5a623); border-radius: 20px; transition: width 0.5s; }
+  .tab-score-num { font-weight: 800; font-size: 0.95rem; color: var(--purple); }
+
+  /* VOCAB TABLE */
+  .vocab-table { width: 100%; border-collapse: collapse; margin-bottom: 16px; direction: ltr; }
+  .vocab-table th {
+    background: var(--purple);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    padding: 8px 12px;
+    font-size: 0.92rem;
+    text-align: left;
+  }
+  .vocab-table td {
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.93rem;
+  }
+  .vocab-table tr:nth-child(even) td { background: #faf9ff; }
+  .vocab-table .en { font-weight: 700; }
+  .vocab-table .he { color: #4a3f7a; font-size: 0.88rem; }
+
+  /* STORY BOX */
+  .story-box {
+    background: #fffbf0;
+    border: 2px solid var(--gold);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 18px;
+    font-size: 0.96rem;
+    line-height: 1.8;
+    direction: ltr;
+    text-align: left;
+  }
+  .story-box .story-title {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1.05rem;
+    color: var(--purple);
+    margin-bottom: 8px;
+    text-align: center;
+  }
+
+  /* DRAG & DROP */
+  .drag-pool { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; direction: ltr; }
+  .drag-chip {
+    background: var(--purple-light);
+    border: 2px solid var(--purple-mid);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--purple);
+    cursor: grab;
+    user-select: none;
+    transition: all 0.15s;
+    direction: ltr;
+  }
+  .drag-chip:hover { background: var(--purple); color: white; }
+  .drag-chip.used { opacity: 0.35; pointer-events: none; }
+  .drop-zone {
+    display: inline-block;
+    min-width: 120px;
+    height: 28px;
+    border-bottom: 2.5px dashed var(--purple-mid);
+    vertical-align: middle;
+    margin: 0 4px;
+    text-align: center;
+    line-height: 28px;
+    font-weight: 700;
+    color: var(--purple);
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    direction: ltr;
+    padding: 0 6px;
+  }
+  .drop-zone.filled {
+    background: var(--purple-light);
+    border-bottom: 2.5px solid var(--purple);
+    border-radius: 4px;
+  }
+  .drop-zone.correct { background: #dcfce7; border-bottom-color: var(--green); color: #166534; }
+  .drop-zone.wrong { background: #fee2e2; border-bottom-color: var(--red); color: #991b1b; }
+
+  /* ORDER */
+  .order-list { list-style: none; display: flex; flex-direction: column; gap: 8px; direction: ltr; }
+  .order-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #faf9ff;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+  }
+  .order-input {
+    width: 48px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    padding: 4px;
+    color: var(--purple);
+    outline: none;
+  }
+  .order-input:focus { border-color: var(--purple); }
+  .order-input:disabled { background: #f5f5f5; }
+  .order-item.correct { background: #f0fdf4; border-color: var(--green); }
+  .order-item.wrong { background: #fff5f5; border-color: var(--red); }
+
+  /* CELEBRATION */
+  .celebration {
+    text-align: center;
+    padding: 20px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: var(--purple);
+    display: none;
+  }
+
+  /* DIVIDER */
+  .divider { border: none; border-top: 2px dashed var(--border); margin: 20px 0; }
+
+  @media (max-width: 600px) {
+    .tabs-content { margin: 0 8px 16px; padding: 16px 12px; }
+    .tabs-nav { padding: 10px 8px 0; }
+    .score-panel { padding: 10px 12px; }
+    .header { padding: 14px 14px 10px; }
+    .header-title { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">📖 Now I Know Better</div>
+    <div class="header-sub">כיתה ט · תרגול אוצר מילים והבנת הנקרא</div>
+  </div>
+</div>
+
+<div class="score-panel">
+  <span class="score-label">שם:</span>
+  <input class="name-input" id="studentName" type="text" placeholder="כתוב את שמך כאן" autocomplete="off">
+  <span class="score-label" style="margin-right:10px">ציון:</span>
+  <div class="score-bar-wrap">
+    <div class="score-bar-fill" id="globalScoreBar" style="width:0%"></div>
+  </div>
+  <div class="score-value" id="globalScoreVal">0/100</div>
+</div>
+
+<div class="tabs-nav">
+  <button class="tab-btn active" onclick="switchTab(0)">📚 Tab 1: Vocabulary</button>
+  <button class="tab-btn" onclick="switchTab(1)">✏️ Tab 2: Fill in</button>
+  <button class="tab-btn" onclick="switchTab(2)">🔗 Tab 3: Match</button>
+  <button class="tab-btn" onclick="switchTab(3)">📖 Tab 4: The Story</button>
+  <button class="tab-btn" onclick="switchTab(4)">🌟 Tab 5: Challenges</button>
+</div>
+
+<div class="tabs-content">
+
+<!-- ====== TAB 1: VOCABULARY INTRO ====== -->
+<div class="tab-pane active" id="tab0">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div class="section-title"><span class="emoji">📚</span> Vocabulary You Need to Know</div>
+    <button class="reset-btn" onclick="resetTab(0)">🔄 איפוס Tab 1</button>
+  </div>
+  <div class="section-desc">קרא את המילים. לאחר מכן ענה על השאלות למטה.</div>
+
+  <table class="vocab-table">
+    <tr><th>English</th><th>עברית</th></tr>
+    <tr><td class="en">(an) accident</td><td class="he">תאונה</td></tr>
+    <tr><td class="en">because of</td><td class="he">בגלל</td></tr>
+    <tr><td class="en">(to) change</td><td class="he">לשנות</td></tr>
+    <tr><td class="en">forever</td><td class="he">לנצח, תמיד</td></tr>
+    <tr><td class="en">(to) get into</td><td class="he">להיכנס לתוך</td></tr>
+    <tr><td class="en">(a) mistake</td><td class="he">שגיאה, גלטה</td></tr>
+    <tr><td class="en">perfect</td><td class="he">מושלם</td></tr>
+    <tr><td class="en">popular</td><td class="he">אהוד, מקובל בחברה</td></tr>
+    <tr><td class="en">(to) smell</td><td class="he">להריח</td></tr>
+    <tr><td class="en">(to) wear</td><td class="he">ללבוש</td></tr>
+    <tr><td class="en">control / (to) control</td><td class="he">שליטה / לשלוט ב</td></tr>
+    <tr><td class="en">(to) dance</td><td class="he">לרקוד</td></tr>
+    <tr><td class="en">(a) danger / dangerous</td><td class="he">סכנה / מסוכן</td></tr>
+    <tr><td class="en">(a) hospital</td><td class="he">בית חולים</td></tr>
+    <tr><td class="en">(to) lose / lost</td><td class="he">להפסיד, לאבד / איבד</td></tr>
+    <tr><td class="en">(to) make a mistake</td><td class="he">לעשות שגיאה</td></tr>
+    <tr><td class="en">out of danger</td><td class="he">יצא מכלל סכנה</td></tr>
+    <tr><td class="en">(a) prison</td><td class="he">כלא</td></tr>
+    <tr><td class="en">(a) seat belt</td><td class="he">חגורת בטיחות</td></tr>
+    <tr><td class="en">was badly hurt</td><td class="he">נפגע קשה</td></tr>
+    <tr><td class="en">(a) wheelchair</td><td class="he">כיסא גלגלים</td></tr>
+  </table>
+
+  <hr class="divider">
+  <div class="section-title"><span class="emoji">🧠</span> Quick Quiz – What's the word?</div>
+  <div class="section-desc">בחר את התרגום הנכון לאנגלית.</div>
+
+  <div id="tab0-questions"></div>
+  <button class="check-btn" id="check0" onclick="checkTab0()">✔ בדוק תשובות</button>
+  <div style="margin-top:10px" id="tab0-result"></div>
+  <div class="tab-score-bar" style="margin-top:14px">
+    <span class="tab-score-label">Tab 1:</span>
+    <div class="tab-score-wrap"><div class="tab-score-fill" id="tab0-sfill" style="width:0%"></div></div>
+    <span class="tab-score-num" id="tab0-snum">0</span>
+  </div>
+</div>
+
+<!-- ====== TAB 2: FILL IN ====== -->
+<div class="tab-pane" id="tab1">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div class="section-title"><span class="emoji">✏️</span> Fill in the Blanks</div>
+    <button class="reset-btn" onclick="resetTab(1)">🔄 איפוס Tab 2</button>
+  </div>
+  <div class="section-desc">השלם כל משפט עם המילה הנכונה מהבנק.</div>
+
+  <div class="word-bank">
+    <span class="word-bank-label">WORD BANK:</span>
+    <span class="word-chip">accident</span>
+    <span class="word-chip">control</span>
+    <span class="word-chip">dangerous</span>
+    <span class="word-chip">forever</span>
+    <span class="word-chip">hospital</span>
+    <span class="word-chip">lose</span>
+    <span class="word-chip">mistakes</span>
+    <span class="word-chip">out of danger</span>
+    <span class="word-chip">popular</span>
+    <span class="word-chip">seat belt</span>
+    <span class="word-chip">wheelchair</span>
+    <span class="word-chip">prison</span>
+  </div>
+
+  <div id="tab1-questions"></div>
+  <button class="check-btn" id="check1" onclick="checkTab1()">✔ בדוק תשובות</button>
+  <div style="margin-top:10px" id="tab1-result"></div>
+  <div class="tab-score-bar" style="margin-top:14px">
+    <span class="tab-score-label">Tab 2:</span>
+    <div class="tab-score-wrap"><div class="tab-score-fill" id="tab1-sfill" style="width:0%"></div></div>
+    <span class="tab-score-num" id="tab1-snum">0</span>
+  </div>
+</div>
+
+<!-- ====== TAB 3: MATCHING ====== -->
+<div class="tab-pane" id="tab2">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div class="section-title"><span class="emoji">🔗</span> Match the Words</div>
+    <button class="reset-btn" onclick="resetTab(2)">🔄 איפוס Tab 3</button>
+  </div>
+  <div class="section-desc">חבר כל מילה אנגלית לתרגום הנכון.</div>
+  <div id="tab2-questions"></div>
+  <button class="check-btn" id="check2" onclick="checkTab2()">✔ בדוק תשובות</button>
+  <div style="margin-top:10px" id="tab2-result"></div>
+  <div class="tab-score-bar" style="margin-top:14px">
+    <span class="tab-score-label">Tab 3:</span>
+    <div class="tab-score-wrap"><div class="tab-score-fill" id="tab2-sfill" style="width:0%"></div></div>
+    <span class="tab-score-num" id="tab2-snum">0</span>
+  </div>
+</div>
+
+<!-- ====== TAB 4: STORY ====== -->
+<div class="tab-pane" id="tab3">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div class="section-title"><span class="emoji">📖</span> The Story: Now I Know Better</div>
+    <button class="reset-btn" onclick="resetTab(3)">🔄 איפוס Tab 4</button>
+  </div>
+  <div class="section-desc">ענה על שאלות ההבנה על הסיפור.</div>
+
+  <div class="story-box">
+    <div class="story-title">Now I Know Better – Summary</div>
+    Alice was 17. Her life was <strong>perfect</strong>. She was a good student and <strong>popular</strong> with her friends. She sang, danced and played the guitar.<br><br>
+    On April 10, 2018, Mark came to pick her up. Mark <strong>smelled of alcohol</strong>, but she still got into his car. That was her <strong>first mistake</strong>.<br><br>
+    Mark was driving very fast. He lost <strong>control</strong> of the car and it overturned. Mark and Brenda wore <strong>seat belts</strong>. Alice didn't. That was her <strong>second mistake</strong>.<br><br>
+    Alice was <strong>badly hurt</strong>. She woke up in the <strong>hospital</strong> and couldn't feel her legs. Two weeks later, doctors said: "She is <strong>out of danger</strong>, but she will never walk again."<br><br>
+    Mark went to <strong>prison</strong>. Alice was in a <strong>wheelchair forever</strong> because of him – or so she thought.<br><br>
+    Then Brenda said: "You're wrong." And Alice understood – <em>it was her fault, too</em>. She used to think that nothing bad could ever happen to her. Now she knows better.
+  </div>
+
+  <div id="tab3-questions"></div>
+  <button class="check-btn" id="check3" onclick="checkTab3()">✔ בדוק תשובות</button>
+  <div style="margin-top:10px" id="tab3-result"></div>
+  <div class="tab-score-bar" style="margin-top:14px">
+    <span class="tab-score-label">Tab 4:</span>
+    <div class="tab-score-wrap"><div class="tab-score-fill" id="tab3-sfill" style="width:0%"></div></div>
+    <span class="tab-score-num" id="tab3-snum">0</span>
+  </div>
+</div>
+
+<!-- ====== TAB 5: CHALLENGES ====== -->
+<div class="tab-pane" id="tab4">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div class="section-title"><span class="emoji">🌟</span> Challenge Exercises</div>
+    <button class="reset-btn" onclick="resetTab(4)">🔄 איפוס Tab 5</button>
+  </div>
+  <div class="section-desc">תרגילים מאתגרים יותר – סדר משפטים, True/False, ועוד.</div>
+
+  <div id="tab4-questions"></div>
+  <button class="check-btn" id="check4" onclick="checkTab4()">✔ בדוק תשובות</button>
+  <div style="margin-top:10px" id="tab4-result"></div>
+  <div class="tab-score-bar" style="margin-top:14px">
+    <span class="tab-score-label">Tab 5:</span>
+    <div class="tab-score-wrap"><div class="tab-score-fill" id="tab4-sfill" style="width:0%"></div></div>
+    <span class="tab-score-num" id="tab4-snum">0</span>
+  </div>
+</div>
+
+</div><!-- /tabs-content -->
+
+<script>
+// ============================================================
+// STORAGE KEY
+const STORAGE_KEY = 'now_i_know_better_v2';
+
+// ============================================================
+// DATA DEFINITIONS
+
+// TAB 0: MC vocabulary quiz (8 questions)
+const tab0Data = [
+  { q: "כיסא גלגלים", opts: ["wheelchair","hospital","seat belt","prison"], ans: "wheelchair" },
+  { q: "מסוכן", opts: ["perfect","dangerous","popular","forever"], ans: "dangerous" },
+  { q: "חגורת בטיחות", opts: ["seat belt","control","mistake","danger"], ans: "seat belt" },
+  { q: "לשלוט ב", opts: ["to lose","to change","to control","to smell"], ans: "to control" },
+  { q: "יצא מכלל סכנה", opts: ["was badly hurt","out of danger","lost control","in hospital"], ans: "out of danger" },
+  { q: "לנצח, תמיד", opts: ["because of","forever","popular","perfect"], ans: "forever" },
+  { q: "כלא", opts: ["hospital","wheelchair","prison","accident"], ans: "prison" },
+  { q: "לעשות שגיאה", opts: ["to get into","to make a mistake","to wear","to dance"], ans: "to make a mistake" },
+];
+
+// TAB 1: Fill in the blanks (12 sentences)
+const tab1Data = [
+  { before:"When you get into a car, put on your", after:".", ans:"seat belt", display:"seat belt" },
+  { before:"He is very bossy. He always wants to", after:"everything.", ans:"control", display:"control" },
+  { before:"A man was badly hurt in a car", after:".", ans:"accident", display:"accident" },
+  { before:"Take it easy or you'll", after:"control of your life.", ans:"lose", display:"lose" },
+  { before:"She is still sick, but she is", after:".", ans:"out of danger", display:"out of danger" },
+  { before:"It is", after:"to drive fast.", ans:"dangerous", display:"dangerous" },
+  { before:"Nobody is perfect. Everyone makes", after:".", ans:"mistakes", display:"mistakes" },
+  { before:"Alice was", after:"with her friends at school.", ans:"popular", display:"popular" },
+  { before:"Mark was sent to", after:"after the accident.", ans:"prison", display:"prison" },
+  { before:"Alice woke up in the", after:"and couldn't feel her legs.", ans:"hospital", display:"hospital" },
+  { before:"She will be in a", after:"for the rest of her life.", ans:"wheelchair", display:"wheelchair" },
+  { before:"She was angry because of Mark.", ans_sentence:"She thought she would be in a wheelchair", after:"because of him.", ans:"forever", display:"forever" },
+];
+
+// TAB 2: Matching (10 words)
+const tab2Words = [
+  { en: "accident", he: "תאונה" },
+  { en: "because of", he: "בגלל" },
+  { en: "forever", he: "לנצח" },
+  { en: "dangerous", he: "מסוכן" },
+  { en: "to lose control", he: "לאבד שליטה" },
+  { en: "was badly hurt", he: "נפגע קשה" },
+  { en: "to wear a seat belt", he: "לחגור חגורת בטיחות" },
+  { en: "out of danger", he: "יצא מכלל סכנה" },
+  { en: "to make a mistake", he: "לעשות שגיאה" },
+  { en: "wheelchair", he: "כיסא גלגלים" },
+];
+
+// TAB 3: Comprehension MC (8 questions)
+const tab3Data = [
+  { q:"At 17, Alice was –", opts:["very sad","perfect","in a wheelchair","in prison"], ans:"perfect" },
+  { q:"Alice's first mistake was –", opts:["not wearing a seat belt","driving fast","getting into Mark's car","going to the hospital"], ans:"getting into Mark's car" },
+  { q:"Alice's second mistake was –", opts:["not wearing a seat belt","drinking alcohol","driving fast","going to the party"], ans:"not wearing a seat belt" },
+  { q:"Who was wearing a seat belt in the car?", opts:["Alice only","Alice, Mark and Brenda","Mark and Brenda only","Nobody"], ans:"Mark and Brenda only" },
+  { q:"What did the doctors tell Alice's parents?", opts:["She will walk again soon","She will never walk again","She needs more tests","She is in danger"], ans:"She will never walk again" },
+  { q:"Why did Alice get into the car?", opts:["She didn't know it was dangerous","She knew it was dangerous but didn't care","Mark forced her","Brenda asked her to"], ans:"She didn't know it was dangerous" },
+  { q:"At the end of the story, Alice understands –", opts:["it was only Mark's fault","it was only her fault","it was her fault too","Mark will get out of prison soon"], ans:"it was her fault too" },
+  { q:"'Now I know better' means –", opts:["I know more vocabulary","I will never make those mistakes again","I know the story better","I can walk again"], ans:"I will never make those mistakes again" },
+];
+
+// TAB 4: True/False (5) + sentence ordering (5)
+const tab4TF = [
+  { s:"Alice was 15 years old when the accident happened.", ans:false },
+  { s:"Mark smelled of alcohol before the accident.", ans:true },
+  { s:"All three people in the car were badly hurt.", ans:false },
+  { s:"Mark went to prison because of the accident.", ans:true },
+  { s:"Alice blamed only Mark for her situation.", ans:true },
+];
+const tab4Order = [
+  { text:"Mark drove very fast.", correct:1 },
+  { text:"As he turned left, he lost control.", correct:2 },
+  { text:"Alice woke up in the hospital.", correct:4 },
+  { text:"The car overturned.", correct:3 },
+  { text:"The doctors said she would never walk again.", correct:5 },
+];
+
+// ============================================================
+// STATE
+let state = {};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem(STORAGE_KEY);
+    if (s) state = JSON.parse(s);
+  } catch(e) { state = {}; }
+  if (!state.name) state.name = '';
+  if (!state.tabs) state.tabs = [{},{},{},{},{}];
+  while (state.tabs.length < 5) state.tabs.push({});
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+
+// ============================================================
+// TAB SWITCHING
+let currentTab = 0;
+function switchTab(i) {
+  document.querySelectorAll('.tab-pane').forEach((p,idx) => p.classList.toggle('active', idx===i));
+  document.querySelectorAll('.tab-btn').forEach((b,idx) => b.classList.toggle('active', idx===i));
+  currentTab = i;
+}
+
+// ============================================================
+// LEVENSHTEIN fuzzy match
+function lev(a, b) {
+  a = a.toLowerCase().trim(); b = b.toLowerCase().trim();
+  if (a === b) return 0;
+  const m = a.length, n = b.length;
+  const dp = Array.from({length:m+1}, (_,i) => Array.from({length:n+1}, (_,j) => i===0?j:j===0?i:0));
+  for (let i=1;i<=m;i++) for(let j=1;j<=n;j++)
+    dp[i][j] = a[i-1]===b[j-1] ? dp[i-1][j-1] : 1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+  return dp[m][n];
+}
+function fuzzyMatch(input, answer) {
+  const a = input.toLowerCase().trim(), b = answer.toLowerCase().trim();
+  if (a === b) return true;
+  if (b.length <= 4) return a === b;
+  return lev(a, b) <= Math.floor(b.length * 0.25);
+}
+
+// ============================================================
+// SCORE SYSTEM
+// Tab weights: 10, 25, 20, 30, 15 = 100
+const tabWeights = [10, 25, 20, 30, 15];
+function updateGlobalScore() {
+  let total = 0;
+  for (let i=0;i<5;i++) {
+    const ts = state.tabs[i];
+    const score = (ts && ts.score) ? ts.score : 0;
+    total += score * tabWeights[i] / 100;
+  }
+  const rounded = Math.round(total);
+  document.getElementById('globalScoreBar').style.width = rounded + '%';
+  document.getElementById('globalScoreVal').textContent = rounded + '/100';
+}
+function updateTabScore(tabIdx, score) {
+  state.tabs[tabIdx].score = score;
+  document.getElementById('tab'+tabIdx+'-sfill').style.width = score + '%';
+  document.getElementById('tab'+tabIdx+'-snum').textContent = Math.round(score);
+  saveState();
+  updateGlobalScore();
+}
+
+// ============================================================
+// BUILD TAB 0
+function buildTab0() {
+  const ts = state.tabs[0];
+  if (!ts.attempts) ts.attempts = {};
+  if (!ts.locked) ts.locked = {};
+  if (!ts.answers) ts.answers = {};
+
+  let html = '';
+  tab0Data.forEach((item, i) => {
+    const locked = !!ts.locked[i];
+    const chosen = ts.answers[i] || '';
+    html += `<div class="q-item${locked&&chosen===item.ans?' correct':locked&&chosen!==item.ans?' wrong':''}" id="tab0-q${i}">`;
+    html += `<div class="q-text" style="direction:rtl;text-align:right">מה הפירוש של: <strong>${item.q}</strong></div>`;
+    html += `<div class="mc-options">`;
+    item.opts.forEach(opt => {
+      let cls = 'mc-option';
+      if (locked) {
+        cls += ' disabled';
+        if (opt === chosen && opt === item.ans) cls += ' selected-correct';
+        else if (opt === chosen && opt !== item.ans) cls += ' selected-wrong';
+        else if (opt === item.ans) cls += ' show-correct';
+      }
+      html += `<label class="${cls}">
+        <input type="radio" name="t0q${i}" value="${opt}" ${chosen===opt?'checked':''} ${locked?'disabled':''} onchange="t0pick(${i},'${opt.replace(/'/g,"\\'")}')">
+        <span>${opt}</span>
+      </label>`;
+    });
+    html += `</div>`;
+    if (locked && chosen !== item.ans) {
+      html += `<div class="feedback-row feedback-wrong">✗ לא נכון</div><div class="feedback-reveal">✔ התשובה: ${item.ans}</div>`;
+    } else if (locked && chosen === item.ans) {
+      html += `<div class="feedback-row feedback-correct">✓ נכון!</div>`;
+    }
+    const att = ts.attempts[i] || 0;
+    if (!locked) html += `<div class="attempts-left">נסיונות שנותרו: ${2-att}</div>`;
+    html += `</div>`;
+  });
+  document.getElementById('tab0-questions').innerHTML = html;
+  document.getElementById('check0').disabled = !!ts.allChecked;
+  restoreTab0Score();
+}
+
+function t0pick(i, val) {
+  if (!state.tabs[0].answers) state.tabs[0].answers = {};
+  state.tabs[0].answers[i] = val;
+  saveState();
+}
+
+function checkTab0() {
+  const ts = state.tabs[0];
+  if (!ts.attempts) ts.attempts = {};
+  if (!ts.locked) ts.locked = {};
+  if (!ts.answers) ts.answers = {};
+
+  let correct = 0;
+  tab0Data.forEach((item, i) => {
+    if (ts.locked[i]) { if (ts.answers[i]===item.ans) correct++; return; }
+    const att = (ts.attempts[i]||0) + 1;
+    ts.attempts[i] = att;
+    if (ts.answers[i] === item.ans) { ts.locked[i] = true; correct++; }
+    else if (att >= 2) { ts.locked[i] = true; }
+  });
+
+  const allLocked = tab0Data.every((_,i) => ts.locked[i]);
+  if (allLocked) { ts.allChecked = true; document.getElementById('check0').disabled = true; }
+  const score = Math.round(correct / tab0Data.length * 100);
+  updateTabScore(0, score);
+  saveState();
+  buildTab0();
+}
+
+function restoreTab0Score() {
+  const ts = state.tabs[0];
+  if (ts.score !== undefined) updateTabScore(0, ts.score);
+}
+
+// ============================================================
+// BUILD TAB 1 (fill in blanks)
+const tab1Sentences = [
+  { before:"When you get into a car, put on your", after:".", ans:"seat belt" },
+  { before:"He is very bossy. He always wants to", after:"everything.", ans:"control" },
+  { before:"A man was badly hurt in a car", after:".", ans:"accident" },
+  { before:"Take it easy or you'll", after:"control of your life.", ans:"lose" },
+  { before:"She is still sick, but she is", after:".", ans:"out of danger" },
+  { before:"It is", after:"to drive fast.", ans:"dangerous" },
+  { before:"Nobody is perfect. Everyone makes", after:".", ans:"mistakes" },
+  { before:"Alice was", after:"with her friends at school.", ans:"popular" },
+  { before:"Mark was sent to", after:"after the accident.", ans:"prison" },
+  { before:"Alice woke up in the", after:"and couldn't feel her legs.", ans:"hospital" },
+  { before:"She will be in a", after:"for the rest of her life.", ans:"wheelchair" },
+  { before:"She will be in a wheelchair", after:"because of him.", ans:"forever" },
+];
+
+function buildTab1() {
+  const ts = state.tabs[1];
+  if (!ts.attempts) ts.attempts = {};
+  if (!ts.locked) ts.locked = {};
+  if (!ts.answers) ts.answers = {};
+
+  let html = '';
+  tab1Sentences.forEach((item, i) => {
+    const locked = !!ts.locked[i];
+    const val = ts.answers[i] || '';
+    const isCorrect = locked && fuzzyMatch(val, item.ans);
+    const isWrong = locked && !fuzzyMatch(val, item.ans);
+    html += `<div class="q-item${isCorrect?' correct':isWrong?' wrong':''}" id="tab1-q${i}">`;
+    html += `<div class="q-text" style="direction:ltr;text-align:left">${i+1}. ${item.before} <input class="blank-input" id="t1in${i}" value="${val}" ${locked?'disabled':''} oninput="t1type(${i},this.value)" style="width:${Math.max(80,item.ans.length*11)}px"> ${item.after}</div>`;
+    if (isCorrect) html += `<div class="feedback-row feedback-correct">✓ נכון!</div>`;
+    if (isWrong) html += `<div class="feedback-row feedback-wrong">✗ לא נכון</div><div class="feedback-reveal">✔ התשובה: ${item.ans}</div>`;
+    const att = ts.attempts[i] || 0;
+    if (!locked) html += `<div class="attempts-left">נסיונות שנותרו: ${2-att}</div>`;
+    html += `</div>`;
+  });
+  document.getElementById('tab1-questions').innerHTML = html;
+  document.getElementById('check1').disabled = !!ts.allChecked;
+  if (ts.score !== undefined) updateTabScore(1, ts.score);
+}
+
+function t1type(i, val) {
+  state.tabs[1].answers[i] = val;
+  saveState();
+}
+
+function checkTab1() {
+  const ts = state.tabs[1];
+  if (!ts.attempts) ts.attempts = {};
+  if (!ts.locked) ts.locked = {};
+
+  let correct = 0;
+  tab1Sentences.forEach((item, i) => {
+    if (ts.locked[i]) { if(fuzzyMatch(ts.answers[i]||'', item.ans)) correct++; return; }
+    const att = (ts.attempts[i]||0) + 1;
+    ts.attempts[i] = att;
+    if (fuzzyMatch(ts.answers[i]||'', item.ans)) { ts.locked[i] = true; correct++; }
+    else if (att >= 2) { ts.locked[i] = true; }
+  });
+
+  const allLocked = tab1Sentences.every((_,i) => ts.locked[i]);
+  if (allLocked) { ts.allChecked = true; document.getElementById('check1').disabled = true; }
+  const score = Math.round(correct / tab1Sentences.length * 100);
+  updateTabScore(1, score);
+  saveState();
+  buildTab1();
+}
+
+// ============================================================
+// BUILD TAB 2 (matching)
+function buildTab2() {
+  const ts = state.tabs[2];
+  if (!ts.answers) ts.answers = {};
+  if (!ts.locked) ts.locked = {};
+
+  // Shuffle Hebrew for display
+  const shuffledHe = [...tab2Words].map(w => w.he).sort(() => 0.5-0.5); // keep original order for select
+  const allHe = tab2Words.map(w => w.he);
+
+  let html = '<div class="match-grid">';
+  tab2Words.forEach((item, i) => {
+    const locked = !!ts.locked[i];
+    const val = ts.answers[i] || '';
+    html += `<div class="match-word">${item.en}</div>`;
+    html += `<div class="match-arrow">→</div>`;
+    html += `<select class="match-select" id="t2sel${i}" ${locked?'disabled':''} onchange="t2pick(${i},this.value)">`;
+    html += `<option value="">-- בחר --</option>`;
+    allHe.forEach(h => {
+      html += `<option value="${h}" ${val===h?'selected':''}>${h}</option>`;
+    });
+    html += `</select>`;
+  });
+  html += '</div>';
+
+  // Show results if locked
+  if (ts.checked) {
+    html += '<div style="margin-top:10px">';
+    tab2Words.forEach((item, i) => {
+      const correct = ts.answers[i] === item.he;
+      html += `<div style="font-size:0.88rem;margin-bottom:4px;direction:ltr">${correct?'✅':'❌'} <strong>${item.en}</strong> → ${ts.answers[i]||'—'}${!correct?' <span style="color:var(--green)">(✔ '+item.he+')</span>':''}</div>`;
+    });
+    html += '</div>';
+  }
+
+  document.getElementById('tab2-questions').innerHTML = html;
+  document.getElementById('check2').disabled = !!ts.allChecked;
+  if (ts.score !== undefined) updateTabScore(2, ts.score);
+}
+
+function t2pick(i, val) {
+  state.tabs[2].answers[i] = val;
+  saveState();
+}
+
+function checkTab2() {
+  const ts = state.tabs[2];
+  if (!ts.attempts) ts.attempts = 0;
+  ts.attempts++;
+  ts.checked = true;
+
+  let correct = 0;
+  tab2Words.forEach((item, i) => {
+    if (ts.answers[i] === item.he) correct++;
+  });
+
+  if (ts.attempts >= 2) {
+    ts.allChecked = true;
+    // lock all
+    tab2Words.forEach((_, i) => ts.locked[i] = true);
+  }
+
+  const score = Math.round(correct / tab2Words.length * 100);
+  updateTabScore(2, score);
+  saveState();
+  buildTab2();
+}
+
+// ============================================================
+// BUILD TAB 3 (comprehension MC)
+function buildTab3() {
+  const ts = state.tabs[3];
+  if (!ts.attempts) ts.attempts = {};
+  if (!ts.locked) ts.locked = {};
+  if (!ts.answers) ts.answers = {};
+
+  let html = '';
+  tab3Data.forEach((item, i) => {
+    const locked = !!ts.locked[i];
+    const chosen = ts.answers[i] || '';
+    html += `<div class="q-item${locked&&chosen===item.ans?' correct':locked&&chosen!==item.ans?' wrong':''}" id="tab3-q${i}">`;
+    html += `<div class="q-text" style="direction:ltr;text-align:left">${i+1}. ${item.q}</div>`;
+    html += `<div class="mc-options">`;
+    item.opts.forEach(opt => {
+      let cls = 'mc-option';
+      if (locked) {
+        cls += ' disabled';
+        if (opt === chosen && opt === item.ans) cls += ' selected-correct';
+        else if (opt === chosen && opt !== item.ans) cls += ' selected-wrong';
+        else if (opt === item.ans) cls += ' show-correct';
+      }
+      html += `<label class="${cls}">
+        <input type="radio" name="t3q${i}" value="${opt.replace(/"/g,'&quot;')}" ${chosen===opt?'checked':''} ${locked?'disabled':''} onchange="t3pick(${i},this.value)">
+        <span>${opt}</span>
+      </label>`;
+    });
+    html += `</div>`;
+    if (locked && chosen !== item.ans) {
+      html += `<div class="feedback-row feedback-wrong">✗ לא נכון</div><div class="feedback-reveal">✔ התשובה: ${item.ans}</div>`;
+    } else if (locked && chosen === item.ans) {
+      html += `<div class="feedback-row feedback-correct">✓ נכון!</div>`;
+    }
+    const att = ts.attempts[i] || 0;
+    if (!locked) html += `<div class="attempts-left">נסיונות שנותרו: ${2-att}</div>`;
+    html += `</div>`;
+  });
+  document.getElementById('tab3-questions').innerHTML = html;
+  document.getElementById('check3').disabled = !!ts.allChecked;
+  if (ts.score !== undefined) updateTabScore(3, ts.score);
+}
+
+function t3pick(i, val) {
+  if (!state.tabs[3].answers) state.tabs[3].answers = {};
+  state.tabs[3].answers[i] = val;
+  saveState();
+}
+
+function checkTab3() {
+  const ts = state.tabs[3];
+  if (!ts.attempts) ts.attempts = {};
+  if (!ts.locked) ts.locked = {};
+
+  let correct = 0;
+  tab3Data.forEach((item, i) => {
+    if (ts.locked[i]) { if(ts.answers[i]===item.ans) correct++; return; }
+    const att = (ts.attempts[i]||0)+1;
+    ts.attempts[i] = att;
+    if (ts.answers[i]===item.ans) { ts.locked[i]=true; correct++; }
+    else if (att>=2) { ts.locked[i]=true; }
+  });
+
+  const allLocked = tab3Data.every((_,i)=>ts.locked[i]);
+  if (allLocked) { ts.allChecked=true; document.getElementById('check3').disabled=true; }
+  updateTabScore(3, Math.round(correct/tab3Data.length*100));
+  saveState();
+  buildTab3();
+}
+
+// ============================================================
+// BUILD TAB 4 (TF + ordering)
+function buildTab4() {
+  const ts = state.tabs[4];
+  if (!ts.tf) ts.tf = {};
+  if (!ts.tfLocked) ts.tfLocked = {};
+  if (!ts.tfAttempts) ts.tfAttempts = {};
+  if (!ts.order) ts.order = {};
+  if (!ts.orderLocked) ts.orderLocked = {};
+  if (!ts.orderAttempts) ts.orderAttempts = 0;
+
+  let html = '<div class="section-title" style="margin-bottom:8px"><span class="emoji">✅</span> Part A: True or False?</div>';
+  tab4TF.forEach((item, i) => {
+    const locked = !!ts.tfLocked[i];
+    const chosen = ts.tf[i]; // true/false/undefined
+    const isCorrect = locked && chosen === item.ans;
+    const isWrong = locked && chosen !== item.ans;
+    html += `<div class="tf-row${isCorrect?' correct':isWrong?' wrong':''}" id="tab4-tf${i}">`;
+    html += `<div class="tf-text" style="direction:ltr">${i+1}. ${item.s}</div>`;
+    html += `<div class="tf-btns">`;
+    html += `<button class="tf-btn${chosen===true?' selected-true':''}" ${locked?'disabled':''} onclick="t4tf(${i},true)">TRUE</button>`;
+    html += `<button class="tf-btn${chosen===false?' selected-false':''}" ${locked?'disabled':''} onclick="t4tf(${i},false)">FALSE</button>`;
+    html += `</div>`;
+    if (isCorrect) html += `<span style="color:var(--green);font-weight:700">✓</span>`;
+    if (isWrong) html += `<span style="color:var(--red);font-weight:700">✗ (${item.ans?'TRUE':'FALSE'})</span>`;
+    html += `</div>`;
+  });
+
+  html += '<hr class="divider">';
+  html += '<div class="section-title" style="margin-bottom:8px"><span class="emoji">🔢</span> Part B: Put the events in order (1-5)</div>';
+  html += '<div class="section-desc" style="direction:ltr;text-align:left">Write the correct number (1 = first event)</div>';
+  html += '<ul class="order-list">';
+  tab4Order.forEach((item, i) => {
+    const locked = !!ts.orderLocked;
+    const val = ts.order[i] !== undefined ? ts.order[i] : '';
+    const isCorrect = locked && parseInt(val)===item.correct;
+    const isWrong = locked && parseInt(val)!==item.correct;
+    html += `<li class="order-item${isCorrect?' correct':isWrong?' wrong':''}" id="tab4-ord${i}">`;
+    html += `<input class="order-input" id="t4ord${i}" type="number" min="1" max="5" value="${val}" ${locked?'disabled':''} oninput="t4order(${i},this.value)">`;
+    html += `<span style="direction:ltr">${item.text}</span>`;
+    if (isWrong) html += `<span style="color:var(--green);font-size:0.85rem;margin-right:auto">✔ ${item.correct}</span>`;
+    html += `</li>`;
+  });
+  html += '</ul>';
+
+  document.getElementById('tab4-questions').innerHTML = html;
+  document.getElementById('check4').disabled = !!ts.allChecked;
+  if (ts.score !== undefined) updateTabScore(4, ts.score);
+}
+
+function t4tf(i, val) {
+  state.tabs[4].tf[i] = val;
+  saveState();
+  buildTab4();
+}
+function t4order(i, val) {
+  state.tabs[4].order[i] = val;
+  saveState();
+}
+
+function checkTab4() {
+  const ts = state.tabs[4];
+
+  // Check TF
+  let tfCorrect = 0;
+  tab4TF.forEach((item, i) => {
+    if (ts.tfLocked[i]) { if(ts.tf[i]===item.ans) tfCorrect++; return; }
+    const att = (ts.tfAttempts[i]||0)+1;
+    ts.tfAttempts[i] = att;
+    if (ts.tf[i]===item.ans) { ts.tfLocked[i]=true; tfCorrect++; }
+    else if (att>=2) { ts.tfLocked[i]=true; }
+  });
+
+  // Check order
+  let ordCorrect = 0;
+  if (!ts.orderLocked) {
+    ts.orderAttempts++;
+    tab4Order.forEach((item, i) => {
+      if (parseInt(ts.order[i])===item.correct) ordCorrect++;
+    });
+    if (ts.orderAttempts >= 2) ts.orderLocked = true;
+  } else {
+    tab4Order.forEach((item, i) => { if(parseInt(ts.order[i])===item.correct) ordCorrect++; });
+  }
+
+  const allTFLocked = tab4TF.every((_,i)=>ts.tfLocked[i]);
+  if (allTFLocked && ts.orderLocked) {
+    ts.allChecked = true;
+    document.getElementById('check4').disabled = true;
+  }
+
+  const total = tab4TF.length + tab4Order.length;
+  const correct = tfCorrect + ordCorrect;
+  updateTabScore(4, Math.round(correct/total*100));
+  saveState();
+  buildTab4();
+}
+
+// ============================================================
+// RESET TAB
+function resetTab(tabIdx) {
+  if (!confirm('האם לאפס את הטאב הזה? כל התשובות יימחקו.')) return;
+  state.tabs[tabIdx] = {};
+  saveState();
+  updateTabScore(tabIdx, 0);
+  [buildTab0, buildTab1, buildTab2, buildTab3, buildTab4][tabIdx]();
+}
+
+// ============================================================
+// NAME
+document.getElementById('studentName').addEventListener('input', function() {
+  state.name = this.value;
+  saveState();
+});
+
+// ============================================================
+// INIT
+loadState();
+document.getElementById('studentName').value = state.name || '';
+buildTab0();
+buildTab1();
+buildTab2();
+buildTab3();
+buildTab4();
+updateGlobalScore();
+</script>
+</body>
+</html>
