@@ -722,21 +722,22 @@ const tab0Data = [
   { q: "כלא", opts: ["hospital","wheelchair","prison","accident"], ans: "prison" },
   { q: "לעשות שגיאה", opts: ["to get into","to make a mistake","to wear","to dance"], ans: "to make a mistake" },
 ];
+// Tab0 question is already in Hebrew — the quiz asks "מה הפירוש של X" → pick English
 
-// TAB 1: Fill in the blanks (12 sentences)
-const tab1Data = [
-  { before:"When you get into a car, put on your", after:".", ans:"seat belt", display:"seat belt" },
-  { before:"He is very bossy. He always wants to", after:"everything.", ans:"control", display:"control" },
-  { before:"A man was badly hurt in a car", after:".", ans:"accident", display:"accident" },
-  { before:"Take it easy or you'll", after:"control of your life.", ans:"lose", display:"lose" },
-  { before:"She is still sick, but she is", after:".", ans:"out of danger", display:"out of danger" },
-  { before:"It is", after:"to drive fast.", ans:"dangerous", display:"dangerous" },
-  { before:"Nobody is perfect. Everyone makes", after:".", ans:"mistakes", display:"mistakes" },
-  { before:"Alice was", after:"with her friends at school.", ans:"popular", display:"popular" },
-  { before:"Mark was sent to", after:"after the accident.", ans:"prison", display:"prison" },
-  { before:"Alice woke up in the", after:"and couldn't feel her legs.", ans:"hospital", display:"hospital" },
-  { before:"She will be in a", after:"for the rest of her life.", ans:"wheelchair", display:"wheelchair" },
-  { before:"She was angry because of Mark.", ans_sentence:"She thought she would be in a wheelchair", after:"because of him.", ans:"forever", display:"forever" },
+// TAB 1: Fill in the blanks (12 sentences) — with Hebrew hint
+const tab1Sentences = [
+  { before:"When you get into a car, put on your", after:".", ans:"seat belt", he:"כשנכנסים למכונית, שמים את ה________ ." },
+  { before:"He is very bossy. He always wants to", after:"everything.", ans:"control", he:"הוא מאוד שולטני. הוא תמיד רוצה ________ בכל." },
+  { before:"A man was badly hurt in a car", after:".", ans:"accident", he:"גבר נפגע קשות בתאונת ________ ." },
+  { before:"Take it easy or you'll", after:"control of your life.", ans:"lose", he:"תירגע, אחרת תאבד ________ על חייך." },
+  { before:"She is still sick, but she is", after:".", ans:"out of danger", he:"היא עדיין חולה, אבל היא ________ ." },
+  { before:"It is", after:"to drive fast.", ans:"dangerous", he:"זה ________ לנסוע מהר." },
+  { before:"Nobody is perfect. Everyone makes", after:".", ans:"mistakes", he:"אף אחד אינו מושלם. כולם עושים ________ ." },
+  { before:"Alice was", after:"with her friends at school.", ans:"popular", he:"אליס הייתה ________ עם חבריה בבית הספר." },
+  { before:"Mark was sent to", after:"after the accident.", ans:"prison", he:"מארק נשלח ל________ אחרי התאונה." },
+  { before:"Alice woke up in the", after:"and couldn't feel her legs.", ans:"hospital", he:"אליס התעוררה ב________ ולא הרגישה את רגליה." },
+  { before:"She will be in a", after:"for the rest of her life.", ans:"wheelchair", he:"היא תהיה ב________ כל חייה." },
+  { before:"She will be in a wheelchair", after:"because of him.", ans:"forever", he:"היא תהיה בכיסא גלגלים ________ בגללו." },
 ];
 
 // TAB 2: Matching (10 words)
@@ -753,32 +754,32 @@ const tab2Words = [
   { en: "wheelchair", he: "כיסא גלגלים" },
 ];
 
-// TAB 3: Comprehension MC (8 questions)
+// TAB 3: Comprehension MC (8 questions) — with Hebrew translation
 const tab3Data = [
-  { q:"At 17, Alice was –", opts:["very sad","perfect","in a wheelchair","in prison"], ans:"perfect" },
-  { q:"Alice's first mistake was –", opts:["not wearing a seat belt","driving fast","getting into Mark's car","going to the hospital"], ans:"getting into Mark's car" },
-  { q:"Alice's second mistake was –", opts:["not wearing a seat belt","drinking alcohol","driving fast","going to the party"], ans:"not wearing a seat belt" },
-  { q:"Who was wearing a seat belt in the car?", opts:["Alice only","Alice, Mark and Brenda","Mark and Brenda only","Nobody"], ans:"Mark and Brenda only" },
-  { q:"What did the doctors tell Alice's parents?", opts:["She will walk again soon","She will never walk again","She needs more tests","She is in danger"], ans:"She will never walk again" },
-  { q:"Why did Alice get into the car?", opts:["She didn't know it was dangerous","She knew it was dangerous but didn't care","Mark forced her","Brenda asked her to"], ans:"She didn't know it was dangerous" },
-  { q:"At the end of the story, Alice understands –", opts:["it was only Mark's fault","it was only her fault","it was her fault too","Mark will get out of prison soon"], ans:"it was her fault too" },
-  { q:"'Now I know better' means –", opts:["I know more vocabulary","I will never make those mistakes again","I know the story better","I can walk again"], ans:"I will never make those mistakes again" },
+  { q:"At 17, Alice was –", qhe:"בגיל 17, אליס הייתה –", opts:["very sad","perfect","in a wheelchair","in prison"], ans:"perfect" },
+  { q:"Alice's first mistake was –", qhe:"הטעות הראשונה של אליס הייתה –", opts:["not wearing a seat belt","driving fast","getting into Mark's car","going to the hospital"], ans:"getting into Mark's car" },
+  { q:"Alice's second mistake was –", qhe:"הטעות השנייה של אליס הייתה –", opts:["not wearing a seat belt","drinking alcohol","driving fast","going to the party"], ans:"not wearing a seat belt" },
+  { q:"Who was wearing a seat belt in the car?", qhe:"מי חגר חגורת בטיחות במכונית?", opts:["Alice only","Alice, Mark and Brenda","Mark and Brenda only","Nobody"], ans:"Mark and Brenda only" },
+  { q:"What did the doctors tell Alice's parents?", qhe:"מה אמרו הרופאים להורים של אליס?", opts:["She will walk again soon","She will never walk again","She needs more tests","She is in danger"], ans:"She will never walk again" },
+  { q:"Why did Alice get into the car?", qhe:"למה אליס נכנסה למכונית?", opts:["She didn't know it was dangerous","She knew it was dangerous but didn't care","Mark forced her","Brenda asked her to"], ans:"She didn't know it was dangerous" },
+  { q:"At the end of the story, Alice understands –", qhe:"בסוף הסיפור, אליס מבינה –", opts:["it was only Mark's fault","it was only her fault","it was her fault too","Mark will get out of prison soon"], ans:"it was her fault too" },
+  { q:"'Now I know better' means –", qhe:"'עכשיו אני יודעת יותר טוב' פירושו –", opts:["I know more vocabulary","I will never make those mistakes again","I know the story better","I can walk again"], ans:"I will never make those mistakes again" },
 ];
 
 // TAB 4: True/False (5) + sentence ordering (5)
 const tab4TF = [
-  { s:"Alice was 15 years old when the accident happened.", ans:false },
-  { s:"Mark smelled of alcohol before the accident.", ans:true },
-  { s:"All three people in the car were badly hurt.", ans:false },
-  { s:"Mark went to prison because of the accident.", ans:true },
-  { s:"Alice blamed only Mark for her situation.", ans:true },
+  { s:"Alice was 15 years old when the accident happened.", she:"אליס הייתה בת 15 כשהתרחשה התאונה.", ans:false },
+  { s:"Mark smelled of alcohol before the accident.", she:"מארק הריח אלכוהול לפני התאונה.", ans:true },
+  { s:"All three people in the car were badly hurt.", she:"כל שלושת האנשים במכונית נפגעו קשות.", ans:false },
+  { s:"Mark went to prison because of the accident.", she:"מארק נשלח לכלא בגלל התאונה.", ans:true },
+  { s:"Alice blamed only Mark for her situation.", she:"אליס האשימה רק את מארק במצבה.", ans:true },
 ];
 const tab4Order = [
-  { text:"Mark drove very fast.", correct:1 },
-  { text:"As he turned left, he lost control.", correct:2 },
-  { text:"Alice woke up in the hospital.", correct:4 },
-  { text:"The car overturned.", correct:3 },
-  { text:"The doctors said she would never walk again.", correct:5 },
+  { text:"Mark drove very fast.", texthe:"מארק נהג מהר מאוד.", correct:1 },
+  { text:"As he turned left, he lost control.", texthe:"כשפנה שמאלה, הוא איבד שליטה.", correct:2 },
+  { text:"Alice woke up in the hospital.", texthe:"אליס התעוררה בבית החולים.", correct:4 },
+  { text:"The car overturned.", texthe:"המכונית התהפכה.", correct:3 },
+  { text:"The doctors said she would never walk again.", texthe:"הרופאים אמרו שהיא לא תלך לעולם.", correct:5 },
 ];
 
 // ============================================================
@@ -928,20 +929,6 @@ function restoreTab0Score() {
 
 // ============================================================
 // BUILD TAB 1 (fill in blanks)
-const tab1Sentences = [
-  { before:"When you get into a car, put on your", after:".", ans:"seat belt" },
-  { before:"He is very bossy. He always wants to", after:"everything.", ans:"control" },
-  { before:"A man was badly hurt in a car", after:".", ans:"accident" },
-  { before:"Take it easy or you'll", after:"control of your life.", ans:"lose" },
-  { before:"She is still sick, but she is", after:".", ans:"out of danger" },
-  { before:"It is", after:"to drive fast.", ans:"dangerous" },
-  { before:"Nobody is perfect. Everyone makes", after:".", ans:"mistakes" },
-  { before:"Alice was", after:"with her friends at school.", ans:"popular" },
-  { before:"Mark was sent to", after:"after the accident.", ans:"prison" },
-  { before:"Alice woke up in the", after:"and couldn't feel her legs.", ans:"hospital" },
-  { before:"She will be in a", after:"for the rest of her life.", ans:"wheelchair" },
-  { before:"She will be in a wheelchair", after:"because of him.", ans:"forever" },
-];
 
 function buildTab1() {
   const ts = state.tabs[1];
@@ -957,6 +944,7 @@ function buildTab1() {
     const isWrong = locked && !fuzzyMatch(val, item.ans);
     html += `<div class="q-item${isCorrect?' correct':isWrong?' wrong':''}" id="tab1-q${i}">`;
     html += `<div class="q-text" style="direction:ltr;text-align:left">${i+1}. ${item.before} <input class="blank-input" id="t1in${i}" value="${val}" ${locked?'disabled':''} oninput="t1type(${i},this.value)" style="width:${Math.max(80,item.ans.length*11)}px"> ${item.after}</div>`;
+    if (item.he) html += `<div style="font-size:0.82rem;color:#8b7ab8;margin-top:3px;direction:rtl;text-align:right">📌 ${item.he}</div>`;
     if (isCorrect) html += `<div class="feedback-row feedback-correct">✓ נכון!</div>`;
     if (isWrong) html += `<div class="feedback-row feedback-wrong">✗ לא נכון</div><div class="feedback-reveal">✔ התשובה: ${item.ans}</div>`;
     const att = ts.attempts[i] || 0;
@@ -1078,6 +1066,7 @@ function buildTab3() {
     const chosen = ts.answers[i] || '';
     html += `<div class="q-item${locked&&chosen===item.ans?' correct':locked&&chosen!==item.ans?' wrong':''}" id="tab3-q${i}">`;
     html += `<div class="q-text" style="direction:ltr;text-align:left">${i+1}. ${item.q}</div>`;
+    if (item.qhe) html += `<div style="font-size:0.82rem;color:#8b7ab8;margin-bottom:6px;direction:rtl;text-align:right">📌 ${item.qhe}</div>`;
     html += `<div class="mc-options">`;
     item.opts.forEach(opt => {
       let cls = 'mc-option';
@@ -1152,7 +1141,7 @@ function buildTab4() {
     const isCorrect = locked && chosen === item.ans;
     const isWrong = locked && chosen !== item.ans;
     html += `<div class="tf-row${isCorrect?' correct':isWrong?' wrong':''}" id="tab4-tf${i}">`;
-    html += `<div class="tf-text" style="direction:ltr">${i+1}. ${item.s}</div>`;
+    html += `<div class="tf-text"><div style="direction:ltr">${i+1}. ${item.s}</div>${item.she?`<div style="font-size:0.8rem;color:#8b7ab8;direction:rtl;text-align:right;margin-top:2px">📌 ${item.she}</div>`:''}</div>`;
     html += `<div class="tf-btns">`;
     html += `<button class="tf-btn${chosen===true?' selected-true':''}" ${locked?'disabled':''} onclick="t4tf(${i},true)">TRUE</button>`;
     html += `<button class="tf-btn${chosen===false?' selected-false':''}" ${locked?'disabled':''} onclick="t4tf(${i},false)">FALSE</button>`;
@@ -1164,7 +1153,7 @@ function buildTab4() {
 
   html += '<hr class="divider">';
   html += '<div class="section-title" style="margin-bottom:8px"><span class="emoji">🔢</span> Part B: Put the events in order (1-5)</div>';
-  html += '<div class="section-desc" style="direction:ltr;text-align:left">Write the correct number (1 = first event)</div>';
+  html += '<div class="section-desc" style="direction:rtl;text-align:right">כתוב את המספר הנכון לצד כל משפט (1 = האירוע הראשון)</div>';
   html += '<ul class="order-list">';
   tab4Order.forEach((item, i) => {
     const locked = !!ts.orderLocked;
@@ -1173,7 +1162,7 @@ function buildTab4() {
     const isWrong = locked && parseInt(val)!==item.correct;
     html += `<li class="order-item${isCorrect?' correct':isWrong?' wrong':''}" id="tab4-ord${i}">`;
     html += `<input class="order-input" id="t4ord${i}" type="number" min="1" max="5" value="${val}" ${locked?'disabled':''} oninput="t4order(${i},this.value)">`;
-    html += `<span style="direction:ltr">${item.text}</span>`;
+    html += `<div><div style="direction:ltr">${item.text}</div>${item.texthe?`<div style="font-size:0.8rem;color:#8b7ab8;direction:rtl">📌 ${item.texthe}</div>`:''}</div>`;
     if (isWrong) html += `<span style="color:var(--green);font-size:0.85rem;margin-right:auto">✔ ${item.correct}</span>`;
     html += `</li>`;
   });
