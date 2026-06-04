@@ -236,9 +236,13 @@
     width: 140px;
     text-align: center;
     outline: none;
-    padding: 0 4px;
+    padding: 2px 4px;
     direction: ltr;
     transition: border-color 0.2s;
+    pointer-events: auto;
+    cursor: text;
+    position: relative;
+    z-index: 1;
   }
   .q-text .blank-input:focus { border-color: var(--purple); }
   .q-text .blank-input:disabled { color: var(--muted); border-bottom-color: var(--border); }
@@ -1019,11 +1023,10 @@ function buildTab1() {
   let html = '';
   tab1Sentences.forEach((item, i) => {
     const locked = !!ts.locked[i];
-    const val = ts.answers[i] || '';
-    const isCorrect = locked && fuzzyMatch(val, item.ans);
-    const isWrong = locked && !fuzzyMatch(val, item.ans);
+    const isCorrect = locked && fuzzyMatch(ts.answers[i]||'', item.ans);
+    const isWrong = locked && !fuzzyMatch(ts.answers[i]||'', item.ans);
     html += `<div class="q-item${isCorrect?' correct':isWrong?' wrong':''}" id="tab1-q${i}">`;
-    html += `<div class="q-text" style="direction:ltr;text-align:left">${i+1}. ${item.before} <input class="blank-input" id="t1in${i}" value="${val}" ${locked?'disabled':''} oninput="t1type(${i},this.value)" style="width:${Math.max(80,item.ans.length*11)}px"> ${item.after}</div>`;
+    html += `<div class="q-text" style="direction:ltr;text-align:left">${i+1}. ${item.before} <input class="blank-input" id="t1in${i}" ${locked?'disabled':''} style="width:${Math.max(90,item.ans.length*13)}px" autocomplete="off" spellcheck="false"> ${item.after}</div>`;
     if (item.he) html += `<div style="font-size:0.82rem;color:#8b7ab8;margin-top:3px;direction:rtl;text-align:right">📌 ${item.he}</div>`;
     if (isCorrect) html += `<div class="feedback-row feedback-correct">✓ נכון!</div>`;
     if (isWrong) html += `<div class="feedback-row feedback-wrong">✗ לא נכון</div><div class="feedback-reveal">✔ התשובה: ${item.ans}</div>`;
@@ -1032,10 +1035,12 @@ function buildTab1() {
     html += `</div>`;
   });
   document.getElementById('tab1-questions').innerHTML = html;
-  // Restore input values via JS (innerHTML value= attribute not always restored after refresh)
+  // Restore values and attach events via JS — never via innerHTML attributes
   tab1Sentences.forEach((item, i) => {
     const el = document.getElementById('t1in'+i);
-    if (el) el.value = ts.answers[i] || '';
+    if (!el) return;
+    el.value = ts.answers[i] || '';
+    el.addEventListener('input', function() { t1type(i, this.value); });
   });
   document.getElementById('check1').disabled = !!ts.allChecked;
   if (ts.score !== undefined) updateTabScore(1, ts.score);
@@ -1085,10 +1090,10 @@ function buildTab2() {
     const val = ts.answers[i] || '';
     html += `<div class="match-word">${item.en}</div>`;
     html += `<div class="match-arrow">→</div>`;
-    html += `<select class="match-select" id="t2sel${i}" ${locked?'disabled':''} onchange="t2pick(${i},this.value)">`;
+    html += `<select class="match-select" id="t2sel${i}" ${locked?'disabled':''}>`;
     html += `<option value="">-- בחר --</option>`;
     allHe.forEach(h => {
-      html += `<option value="${h}" ${val===h?'selected':''}>${h}</option>`;
+      html += `<option value="${h}">${h}</option>`;
     });
     html += `</select>`;
   });
@@ -1105,10 +1110,12 @@ function buildTab2() {
   }
 
   document.getElementById('tab2-questions').innerHTML = html;
-  // Restore select values via JS
+  // Restore select values and attach events via JS
   tab2Words.forEach((item, i) => {
     const el = document.getElementById('t2sel'+i);
-    if (el) el.value = ts.answers[i] || '';
+    if (!el) return;
+    el.value = ts.answers[i] || '';
+    el.addEventListener('change', function() { t2pick(i, this.value); });
   });
   document.getElementById('check2').disabled = !!ts.allChecked;
   if (ts.score !== undefined) updateTabScore(2, ts.score);
@@ -1252,7 +1259,7 @@ function buildTab4() {
     const isCorrect = locked && parseInt(val)===item.correct;
     const isWrong = locked && parseInt(val)!==item.correct;
     html += `<li class="order-item${isCorrect?' correct':isWrong?' wrong':''}" id="tab4-ord${i}">`;
-    html += `<input class="order-input" id="t4ord${i}" type="number" min="1" max="5" value="${val}" ${locked?'disabled':''} oninput="t4order(${i},this.value)">`;
+    html += `<input class="order-input" id="t4ord${i}" type="number" min="1" max="5" ${locked?'disabled':''}>`;
     html += `<div><div style="direction:ltr">${item.text}</div>${item.texthe?`<div style="font-size:0.8rem;color:#8b7ab8;direction:rtl">📌 ${item.texthe}</div>`:''}</div>`;
     if (isWrong) html += `<span style="color:var(--green);font-size:0.85rem;margin-right:auto;white-space:nowrap">✔ ${item.correct}</span>`;
     html += `</li>`;
@@ -1260,10 +1267,13 @@ function buildTab4() {
   html += '</ul>';
 
   document.getElementById('tab4-questions').innerHTML = html;
-  // Restore number input values via JS
-  tab4Order.forEach((item, i) => {
+  // Restore number input values and attach events via JS
+  const tab4OrderForRestore = getShuffledOrder(ts);
+  tab4OrderForRestore.forEach((item, i) => {
     const el = document.getElementById('t4ord'+i);
-    if (el && ts.order[i] !== undefined) el.value = ts.order[i];
+    if (!el) return;
+    if (ts.order[i] !== undefined) el.value = ts.order[i];
+    el.addEventListener('input', function() { t4order(i, this.value); });
   });
   document.getElementById('check4').disabled = !!ts.allChecked;
   if (ts.score !== undefined) updateTabScore(4, ts.score);
@@ -1362,16 +1372,18 @@ function buildTab5() {
     html += `<div class="writing-prompt${submitted?' submitted':hasText?' has-text':''}" id="t5p${i}">`;
     html += `<div class="writing-prompt-q">${item.q}</div>`;
     html += `<div class="writing-prompt-he">📌 ${item.he}</div>`;
-    html += `<textarea class="writing-textarea" id="t5ta${i}" ${submitted?'disabled':''} oninput="t5type(${i},this.value)" placeholder="Write here in English..."></textarea>`;
+    html += `<textarea class="writing-textarea" id="t5ta${i}" ${submitted?'disabled':''} placeholder="Write here in English..."></textarea>`;
     html += `<div class="word-count${enough?' enough':''}">${wc} words${enough?' ✓':' (write at least '+item.min+' words)'}</div>`;
     html += `</div>`;
   });
 
   document.getElementById('tab5-questions').innerHTML = html;
-  // Restore textarea values via JS (innerHTML doesn't reliably restore textarea content after refresh)
+  // Restore textarea values and attach events via JS
   tab5Prompts.forEach((item, i) => {
     const el = document.getElementById('t5ta'+i);
-    if (el) el.value = ts.texts[i] || '';
+    if (!el) return;
+    el.value = ts.texts[i] || '';
+    el.addEventListener('input', function() { t5type(i, this.value); });
   });
   document.getElementById('check5').disabled = submitted;
   if (submitted) {
