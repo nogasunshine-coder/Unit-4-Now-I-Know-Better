@@ -516,6 +516,51 @@
     display: none;
   }
 
+  /* WRITING TASK */
+  .writing-prompt {
+    background: #faf9ff;
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .writing-prompt.has-text { border-color: var(--purple-mid); }
+  .writing-prompt.submitted { border-color: var(--green); background: #f0fdf4; }
+  .writing-prompt-q {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+    direction: ltr;
+    text-align: left;
+  }
+  .writing-prompt-he {
+    font-size: 0.82rem;
+    color: #8b7ab8;
+    direction: rtl;
+    text-align: right;
+    margin-bottom: 8px;
+  }
+  .writing-textarea {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    resize: vertical;
+    min-height: 70px;
+    outline: none;
+    direction: ltr;
+    transition: border-color 0.2s;
+    background: white;
+  }
+  .writing-textarea:focus { border-color: var(--purple); }
+  .writing-textarea:disabled { background: #f5f5f5; color: var(--muted); }
+  .word-count { font-size: 0.78rem; color: var(--muted); text-align: left; margin-top: 3px; direction: ltr; }
+  .word-count.enough { color: var(--green); font-weight: 700; }
+
   /* DIVIDER */
   .divider { border: none; border-top: 2px dashed var(--border); margin: 20px 0; }
 
@@ -553,6 +598,7 @@
   <button class="tab-btn" onclick="switchTab(2)">🔗 Tab 3: Match</button>
   <button class="tab-btn" onclick="switchTab(3)">📖 Tab 4: The Story</button>
   <button class="tab-btn" onclick="switchTab(4)">🌟 Tab 5: Challenges</button>
+  <button class="tab-btn" onclick="switchTab(5)">✍️ Tab 6: Writing</button>
 </div>
 
 <div class="tabs-content">
@@ -701,6 +747,30 @@
   </div>
 </div>
 
+<!-- ====== TAB 6: WRITING / EXIT TICKET ====== -->
+<div class="tab-pane" id="tab5">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <div class="section-title"><span class="emoji">✍️</span> Exit Ticket – Writing Task</div>
+    <button class="reset-btn" onclick="resetTab(5)">🔄 איפוס Tab 6</button>
+  </div>
+  <div class="section-desc" style="font-size:0.95rem;color:var(--text);background:var(--purple-light);border-radius:10px;padding:10px 14px;margin-bottom:18px;direction:rtl">
+    📝 <strong>הנחיות:</strong> ענה על <strong>שלוש</strong> מהשאלות הבאות. כתוב <strong>2-3 משפטים</strong> על כל שאלה. כתוב באנגלית!
+  </div>
+
+  <div id="tab5-questions"></div>
+
+  <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+    <button class="check-btn" id="check5" onclick="submitTab5()">📤 שלח מטלה</button>
+    <span id="tab5-submitted-msg" style="display:none;color:var(--green);font-weight:700;font-size:0.95rem">✅ המטלה נשמרה!</span>
+  </div>
+
+  <div class="tab-score-bar" style="margin-top:14px">
+    <span class="tab-score-label">Tab 6:</span>
+    <div class="tab-score-wrap"><div class="tab-score-fill" id="tab5-sfill" style="width:0%"></div></div>
+    <span class="tab-score-num" id="tab5-snum">0</span>
+  </div>
+</div>
+
 </div><!-- /tabs-content -->
 
 <script>
@@ -774,13 +844,23 @@ const tab4TF = [
   { s:"Mark went to prison because of the accident.", she:"מארק נשלח לכלא בגלל התאונה.", ans:true },
   { s:"Alice blamed only Mark for her situation.", she:"אליס האשימה רק את מארק במצבה.", ans:true },
 ];
-const tab4Order = [
+// Original order data — will be shuffled once and stored in state
+const tab4OrderOrig = [
   { text:"Mark drove very fast.", texthe:"מארק נהג מהר מאוד.", correct:1 },
   { text:"As he turned left, he lost control.", texthe:"כשפנה שמאלה, הוא איבד שליטה.", correct:2 },
-  { text:"Alice woke up in the hospital.", texthe:"אליס התעוררה בבית החולים.", correct:4 },
   { text:"The car overturned.", texthe:"המכונית התהפכה.", correct:3 },
+  { text:"Alice woke up in the hospital.", texthe:"אליס התעוררה בבית החולים.", correct:4 },
   { text:"The doctors said she would never walk again.", texthe:"הרופאים אמרו שהיא לא תלך לעולם.", correct:5 },
 ];
+function getShuffledOrder(ts) {
+  if (!ts.orderShuffled) {
+    const idx = [0,1,2,3,4];
+    for (let i=idx.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]]; }
+    ts.orderShuffled = idx;
+    saveState();
+  }
+  return ts.orderShuffled.map(i => tab4OrderOrig[i]);
+}
 
 // ============================================================
 // STATE
@@ -792,8 +872,8 @@ function loadState() {
     if (s) state = JSON.parse(s);
   } catch(e) { state = {}; }
   if (!state.name) state.name = '';
-  if (!state.tabs) state.tabs = [{},{},{},{},{}];
-  while (state.tabs.length < 5) state.tabs.push({});
+  if (!state.tabs) state.tabs = [{},{},{},{},{},{}];
+  while (state.tabs.length < 6) state.tabs.push({});
 }
 
 function saveState() {
@@ -829,11 +909,11 @@ function fuzzyMatch(input, answer) {
 
 // ============================================================
 // SCORE SYSTEM
-// Tab weights: 10, 25, 20, 30, 15 = 100
-const tabWeights = [10, 25, 20, 30, 15];
+// Tab weights: 10, 20, 15, 25, 15, 15 = 100
+const tabWeights = [10, 20, 15, 25, 15, 15];
 function updateGlobalScore() {
   let total = 0;
-  for (let i=0;i<5;i++) {
+  for (let i=0;i<6;i++) {
     const ts = state.tabs[i];
     const score = (ts && ts.score) ? ts.score : 0;
     total += score * tabWeights[i] / 100;
@@ -952,6 +1032,11 @@ function buildTab1() {
     html += `</div>`;
   });
   document.getElementById('tab1-questions').innerHTML = html;
+  // Restore input values via JS (innerHTML value= attribute not always restored after refresh)
+  tab1Sentences.forEach((item, i) => {
+    const el = document.getElementById('t1in'+i);
+    if (el) el.value = ts.answers[i] || '';
+  });
   document.getElementById('check1').disabled = !!ts.allChecked;
   if (ts.score !== undefined) updateTabScore(1, ts.score);
 }
@@ -1020,6 +1105,11 @@ function buildTab2() {
   }
 
   document.getElementById('tab2-questions').innerHTML = html;
+  // Restore select values via JS
+  tab2Words.forEach((item, i) => {
+    const el = document.getElementById('t2sel'+i);
+    if (el) el.value = ts.answers[i] || '';
+  });
   document.getElementById('check2').disabled = !!ts.allChecked;
   if (ts.score !== undefined) updateTabScore(2, ts.score);
 }
@@ -1155,6 +1245,7 @@ function buildTab4() {
   html += '<div class="section-title" style="margin-bottom:8px"><span class="emoji">🔢</span> Part B: Put the events in order (1-5)</div>';
   html += '<div class="section-desc" style="direction:rtl;text-align:right">כתוב את המספר הנכון לצד כל משפט (1 = האירוע הראשון)</div>';
   html += '<ul class="order-list">';
+  const tab4Order = getShuffledOrder(ts);
   tab4Order.forEach((item, i) => {
     const locked = !!ts.orderLocked;
     const val = ts.order[i] !== undefined ? ts.order[i] : '';
@@ -1163,12 +1254,17 @@ function buildTab4() {
     html += `<li class="order-item${isCorrect?' correct':isWrong?' wrong':''}" id="tab4-ord${i}">`;
     html += `<input class="order-input" id="t4ord${i}" type="number" min="1" max="5" value="${val}" ${locked?'disabled':''} oninput="t4order(${i},this.value)">`;
     html += `<div><div style="direction:ltr">${item.text}</div>${item.texthe?`<div style="font-size:0.8rem;color:#8b7ab8;direction:rtl">📌 ${item.texthe}</div>`:''}</div>`;
-    if (isWrong) html += `<span style="color:var(--green);font-size:0.85rem;margin-right:auto">✔ ${item.correct}</span>`;
+    if (isWrong) html += `<span style="color:var(--green);font-size:0.85rem;margin-right:auto;white-space:nowrap">✔ ${item.correct}</span>`;
     html += `</li>`;
   });
   html += '</ul>';
 
   document.getElementById('tab4-questions').innerHTML = html;
+  // Restore number input values via JS
+  tab4Order.forEach((item, i) => {
+    const el = document.getElementById('t4ord'+i);
+    if (el && ts.order[i] !== undefined) el.value = ts.order[i];
+  });
   document.getElementById('check4').disabled = !!ts.allChecked;
   if (ts.score !== undefined) updateTabScore(4, ts.score);
 }
@@ -1198,6 +1294,7 @@ function checkTab4() {
 
   // Check order
   let ordCorrect = 0;
+  const tab4Order = getShuffledOrder(ts);
   if (!ts.orderLocked) {
     ts.orderAttempts++;
     tab4Order.forEach((item, i) => {
@@ -1222,13 +1319,112 @@ function checkTab4() {
 }
 
 // ============================================================
+// TAB 5 WRITING PROMPTS
+const tab5Prompts = [
+  {
+    q: "1. What were Alice's TWO mistakes? Write about them.",
+    he: "מהן שתי הטעויות של אליס? כתוב עליהן.",
+    min: 5
+  },
+  {
+    q: "2. Why is it dangerous to get into a car with a drunk driver?",
+    he: "למה מסוכן לעלות על מכונית עם נהג שתוי?",
+    min: 5
+  },
+  {
+    q: "3. How do you think Alice feels now? Why?",
+    he: "מה לדעתך מרגישה אליס עכשיו? למה?",
+    min: 5
+  },
+  {
+    q: "4. What would YOU do if a friend's car smelled of alcohol?",
+    he: "מה היית עושה אם מכונית של חבר הריחה אלכוהול?",
+    min: 5
+  },
+  {
+    q: "5. What is the message of this story? What can we learn from it?",
+    he: "מה המסר של הסיפור הזה? מה אפשר ללמוד ממנו?",
+    min: 5
+  },
+];
+
+function buildTab5() {
+  const ts = state.tabs[5];
+  if (!ts.texts) ts.texts = {};
+  const submitted = !!ts.submitted;
+
+  let html = '';
+  tab5Prompts.forEach((item, i) => {
+    const val = ts.texts[i] || '';
+    const wc = val.trim().split(/\s+/).filter(w => w.length > 0).length;
+    const enough = wc >= item.min;
+    const hasText = val.trim().length > 0;
+    html += `<div class="writing-prompt${submitted?' submitted':hasText?' has-text':''}" id="t5p${i}">`;
+    html += `<div class="writing-prompt-q">${item.q}</div>`;
+    html += `<div class="writing-prompt-he">📌 ${item.he}</div>`;
+    html += `<textarea class="writing-textarea" id="t5ta${i}" ${submitted?'disabled':''} oninput="t5type(${i},this.value)" placeholder="Write here in English..."></textarea>`;
+    html += `<div class="word-count${enough?' enough':''}">${wc} words${enough?' ✓':' (write at least '+item.min+' words)'}</div>`;
+    html += `</div>`;
+  });
+
+  document.getElementById('tab5-questions').innerHTML = html;
+  // Restore textarea values via JS (innerHTML doesn't reliably restore textarea content after refresh)
+  tab5Prompts.forEach((item, i) => {
+    const el = document.getElementById('t5ta'+i);
+    if (el) el.value = ts.texts[i] || '';
+  });
+  document.getElementById('check5').disabled = submitted;
+  if (submitted) {
+    document.getElementById('tab5-submitted-msg').style.display = 'inline';
+  }
+  if (ts.score !== undefined) updateTabScore(5, ts.score);
+}
+
+function t5type(i, val) {
+  if (!state.tabs[5].texts) state.tabs[5].texts = {};
+  state.tabs[5].texts[i] = val;
+  saveState();
+  // live word count update
+  const wc = val.trim().split(/\s+/).filter(w=>w.length>0).length;
+  const min = tab5Prompts[i].min;
+  const wcEl = document.querySelector(`#t5p${i} .word-count`);
+  if (wcEl) {
+    wcEl.textContent = wc + ' words' + (wc>=min?' ✓':' (write at least '+min+' words)');
+    wcEl.className = 'word-count' + (wc>=min?' enough':'');
+  }
+  const pEl = document.getElementById(`t5p${i}`);
+  if (pEl && val.trim()) pEl.classList.add('has-text');
+}
+
+function submitTab5() {
+  const ts = state.tabs[5];
+  // Count answered prompts (min words met)
+  let answered = 0;
+  tab5Prompts.forEach((item, i) => {
+    const val = (ts.texts && ts.texts[i]) || '';
+    const wc = val.trim().split(/\s+/).filter(w=>w.length>0).length;
+    if (wc >= item.min) answered++;
+  });
+  if (answered < 3) {
+    alert('⚠️ כתוב לפחות 3 תשובות עם ' + tab5Prompts[0].min + ' מילים לפחות כל אחת לפני השליחה.');
+    return;
+  }
+  ts.submitted = true;
+  // Score: each answered prompt out of 5 = 20 pts, max 100
+  const score = Math.min(100, Math.round(answered / 3 * 100));
+  updateTabScore(5, score);
+  saveState();
+  buildTab5();
+}
+
+// ============================================================
 // RESET TAB
 function resetTab(tabIdx) {
   if (!confirm('האם לאפס את הטאב הזה? כל התשובות יימחקו.')) return;
   state.tabs[tabIdx] = {};
   saveState();
   updateTabScore(tabIdx, 0);
-  [buildTab0, buildTab1, buildTab2, buildTab3, buildTab4][tabIdx]();
+  [buildTab0, buildTab1, buildTab2, buildTab3, buildTab4, buildTab5][tabIdx]();
 }
 
 // ============================================================
@@ -1247,6 +1443,7 @@ buildTab1();
 buildTab2();
 buildTab3();
 buildTab4();
+buildTab5();
 updateGlobalScore();
 </script>
 </body>
